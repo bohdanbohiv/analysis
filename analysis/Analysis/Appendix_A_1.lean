@@ -239,28 +239,74 @@ example {X Y Z : Prop} (hXY : X ↔ Y) (hXZ : X ↔ Z) : [X, Y, Z].TFAE := by
 example {X Y Z : Prop} (h : [X, Y, Z].TFAE) : X ↔ Y := by
   exact h.out 0 1
 
-/-- Exercise A.1.1.  Fill in the first `sorry` with something reasonable. -/
-example {X Y:Prop} : ¬ ((X ∨ Y) ∧ ¬ (X ∧ Y)) ↔ sorry := by sorry
+/-- Exercise A.1.1 -/
+example {X Y : Prop} : ¬((X ∨ Y) ∧ ¬(X ∧ Y)) ↔ (X ↔ Y) := by
+  rewrite [not_and, not_not]
+  constructor
+  · intro h
+    constructor
+    · intro x
+      have xory : X ∨ Y
+      left
+      exact x
+      exact (h xory).right
+    intro y
+    have xory : X ∨ Y
+    right
+    exact y
+    exact (h xory).left
+  intro h g
+  obtain x | y := g
+  · exact ⟨x, h.mp x⟩
+  exact ⟨h.mpr y, y⟩
 
-/-- Exercise A.1.2.  Fill in the first `sorry` with something reasonable. -/
-example {X Y:Prop} : ¬ (X ↔ Y) ↔ sorry := by sorry
+/-- Exercise A.1.2 -/
+example {X Y : Prop} : ¬(X ↔ Y) ↔ Xor' X Y := by
+  unfold Xor'
+  rewrite [iff_comm]
+  rewrite [iff_not_comm]
+  rewrite [not_or]
+  simp only [not_and]
+  simp only [not_not]
+  constructor
+  · intro h
+    exact ⟨h.mp, h.mpr⟩
+  intro h
+  exact ⟨h.left, h.right⟩
 
-/-- Exercise A.1.3. -/
-def Exercise_A_1_3 : Decidable (∀ (X Y: Prop), (X → Y) → (¬X → ¬ Y) → (X ↔ Y)) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`, depending on whether you believe the given statement to be true or false.
-  sorry
+/-- Exercise A.1.3 -/
+def Exercise_A_1_3 : Decidable (∀ (X Y : Prop), (X → Y) → (¬X → ¬Y) → (X ↔ Y)) := by
+  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`,
+  -- depending on whether you believe the given statement to be true or false.
+  apply isTrue
+  intro X Y
+  intro xy yx
+  rewrite [not_imp_not] at yx
+  exact ⟨xy, yx⟩
 
-/-- Exercise A.1.4. -/
-def Exercise_A_1_4 : Decidable (∀ (X Y: Prop), (X → Y) → (¬Y → ¬ X) → (X ↔ Y)) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+/-- Exercise A.1.4 -/
+def Exercise_A_1_4 : Decidable (∀ (X Y : Prop), (X → Y) → (¬Y → ¬X) → (X ↔ Y)) := by
+  apply isFalse
+  rewrite [not_forall]
+  use False
+  rewrite [not_forall]
+  use True
+  rewrite [not_imp_not]
+  rewrite [false_implies]
+  simp only [true_implies]
+  trivial
 
-/-- Exercise A.1.5. -/
-def Exercise_A_1_5 : Decidable (∀ (X Y Z: Prop), (X ↔ Y) → (Y ↔ Z) → [X,Y,Z].TFAE) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+/-- Exercise A.1.5 -/
+def Exercise_A_1_5 : Decidable (∀ (X Y Z : Prop), (X ↔ Y) → (Y ↔ Z) → [X, Y, Z].TFAE) := by
+  apply isTrue
+  intro X Y Z
+  intro xy yz
+  tfae_finish
 
 /-- Exercise A.1.6. -/
-def Exercise_A_1_6 : Decidable (∀ (X Y Z: Prop), (X → Y) → (Y → Z) → (Z → X) → [X,Y,Z].TFAE) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_1_6 : Decidable
+    (∀ (X Y Z : Prop), (X → Y) → (Y → Z) → (Z → X) → [X, Y, Z].TFAE) := by
+  apply isTrue
+  intro X Y Z
+  intro xy yz zx
+  tfae_finish
