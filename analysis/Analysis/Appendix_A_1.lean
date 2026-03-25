@@ -3,7 +3,7 @@ import Mathlib.Tactic
 /-!
 # Analysis I, Appendix A.1: Mathematical Statements
 
-An introduction to mathematical statements.  Showcases some basic tactics and Lean syntax.
+An introduction to mathematical statements. Showcases some basic tactics and Lean syntax.
 
 -/
 
@@ -16,30 +16,21 @@ An introduction to mathematical statements.  Showcases some basic tactics and Le
 #check 2 + 2 = 5
 
 /-- Every well-formed statement is either true or false... -/
-example (P : Prop) : P=true ∨ P=false := by
-  rewrite [Bool.coe_false]
-  simp only [refl]
-  simp only [eq_iff_iff]
+example (P : Prop) : P=True ∨ P=False := by
+  rewrite [eq_iff_iff, eq_iff_iff]
   rewrite [iff_true, iff_false]
-  rewrite [← imp_iff_or_not]
-  intro p
-  exact p
+  exact Classical.em P
 
 /-- .. but not both. -/
-example (P : Prop) : ¬ (P=true ∧ P=false) := by
-  rewrite [Bool.coe_false]
-  simp only [refl]
-  simp only [eq_iff_iff]
+example (P : Prop) : ¬(P=True ∧ P=False) := by
+  rewrite [eq_iff_iff, eq_iff_iff]
   rewrite [iff_true, iff_false]
-  simp only [and_not_self]
-  simp only [not_false_eq_true]
+  exact and_not_self
 
 -- Note: `P=true` and `P=false` simplify to `P` and `¬P` respectively.
 
-/-- To prove that a statement is true, it suffices to show that it is not false. -/
-example {P: Prop} (h: P≠false) : P=true := by
-  rewrite [Bool.coe_false] at h
-  simp only [refl]
+/-- To prove that a statement is true, it suffices to show that it is not false, -/
+example {P : Prop} (h : P≠False) : P=True := by
   rewrite [ne_eq] at h
   rewrite [eq_iff_iff] at *
   rewrite [iff_false] at h
@@ -48,12 +39,10 @@ example {P: Prop} (h: P≠false) : P=true := by
   exact h
 
 /-- while to show that a statement is false, it suffices to show that it is not true. -/
-example {P : Prop} (h : P≠true) : P=false := by
-  simp only [refl] at h
+example {P : Prop} (h : P≠True) : P=False := by
   rewrite [ne_eq] at h
   rewrite [eq_iff_iff] at *
   rewrite [iff_true] at h
-  rewrite [Bool.coe_false]
   rewrite [iff_false]
   exact h
 
@@ -61,7 +50,7 @@ example {P : Prop} (h : P≠true) : P=false := by
 example : 2 = 2 := rfl
 
 /-- This statement is also true, but not very efficient. -/
-example : 4 ≤ 4 := by norm_num
+example : 4 ≤ 4 := by norm_num1
 
 /- This is an expression, not a statement. -/
 #check 2 + 3 * 5
@@ -109,16 +98,13 @@ example {X Y : Prop} (hY : Y) : X ∨ Y := by
 
 example {X Y : Prop} (hX : ¬X) (hY : ¬Y) : ¬(X ∨ Y) := by
   rewrite [not_or]
-  constructor
-  · exact hX
-  exact hY
+  exact ⟨hX, hY⟩
 
 example : 2+2=4 ∨ 3+3=5 := by
   left
   rfl
 
 example : ¬(2+2=5 ∨ 3+3=5) := by
-  simp only [Nat.reduceAdd]
   simp only [Nat.reduceEqDiff]
   rewrite [or_self]
   simp only [not_false_eq_true]
@@ -128,9 +114,7 @@ example : 2+2=4 ∨ 3+3=6 := by
   rfl
 
 example : 2+2=4 ∧ 3+3=6 := by
-  constructor
-  · rfl
-  rfl
+  exact ⟨rfl, rfl⟩
 
 example : 2+2=4 ∨ 2353+5931=7284 := by
   left
@@ -139,56 +123,49 @@ example : 2+2=4 ∨ 2353+5931=7284 := by
 #check Xor'
 
 /-- Negation -/
-example {X : Prop} : ¬ X=true ↔ X=false := by
-  rewrite [Bool.coe_false]
-  simp only [refl]
-  simp only [eq_iff_iff]
-  simp only [iff_true, iff_false]
+example {X : Prop} : ¬ X=True ↔ X=False := by
+  rewrite [eq_iff_iff, eq_iff_iff]
+  rw [iff_true, iff_false]
 
-example {X : Prop} : ¬ X = false ↔ X = true := by
-  rewrite [Bool.coe_false]
-  simp only [refl]
-  simp only [eq_iff_iff]
+example {X : Prop} : ¬ X=False ↔ X=True := by
+  rewrite [eq_iff_iff, eq_iff_iff]
   rewrite [iff_true, iff_false]
-  simp only [not_not]
+  rw [not_not]
 
 example : ¬ 2+2=5 := by
-  simp only [Nat.reduceAdd]
   simp only [Nat.reduceEqDiff]
-  trivial
+  exact not_false
 
 example : 2+2≠5 := by
   rewrite [ne_eq]
-  simp only [Nat.reduceAdd]
   simp only [Nat.reduceEqDiff]
-  trivial
+  exact not_false
 
 example (Jane_black_hair Jane_blue_eyes : Prop) :
-  ¬(Jane_black_hair ∧ Jane_blue_eyes) ↔ ¬ Jane_black_hair ∨ ¬ Jane_blue_eyes := by
-  rewrite [not_and_or]
-  rfl
+  ¬(Jane_black_hair ∧ Jane_blue_eyes) ↔ ¬Jane_black_hair ∨ ¬Jane_blue_eyes := by
+  rw [not_and_or]
 
 example (x : ℤ) : ¬(Even x ∧ x ≥ 0) ↔ Odd x ∨ x < 0 := by
   rewrite [not_and_or]
-  simp only [Int.not_even_iff_odd, Int.not_le]
+  rw [Int.not_even_iff_odd, Int.not_le]
 
 example (x : ℤ) : ¬(x ≥ 2 ∧ x ≤ 6) ↔ x < 2 ∨ x > 6 := by
   rewrite [not_and_or]
-  simp only [Int.not_le]
+  rw [Int.not_le, Int.not_le]
 
 example (John_brown_hair John_black_hair : Prop) :
   ¬(John_brown_hair ∨ John_black_hair) ↔ ¬John_brown_hair ∧ ¬John_black_hair := by
-  simp only [not_or]
+  rw [not_or]
 
 example (x : ℝ) : ¬(x ≥ 1 ∧ x ≤ -1) ↔ x < 1 ∨ x > -1 := by
   rewrite [not_and_or]
-  simp only [not_le]
+  rw [not_le, not_le]
 
 example (x : ℤ) : ¬(Even x ∨ Odd x) ↔ ¬ Even x ∧ ¬ Odd x := by
-  simp only [not_or]
+  rw [not_or]
 
-example (X : Prop) : ¬ ¬ X ↔ X := by
-  simp only [not_not]
+example (X : Prop) : ¬¬X ↔ X := by
+  rw [not_not]
 
 /-- If and only if (iff) -/
 example {X Y : Prop} (hXY : X ↔ Y) (hX : X) : Y := by
@@ -206,7 +183,7 @@ example {X Y : Prop} (hXY : X ↔ Y) (hY : Y) : X := by
   exact hXY.mpr hY
 
 example {X Y : Prop} (hXY : X ↔ Y) : X=Y := by
-  simp only [hXY]
+  rw [hXY]
 
 example (x : ℝ) : x=3 ↔ 2*x=6 := by
   constructor
@@ -218,16 +195,18 @@ example (x : ℝ) : x=3 ↔ 2*x=6 := by
 example : ¬ ∀ x : ℝ, x = 3 ↔ x^2 = 9 := by
   rewrite [not_forall]
   use -3
-  norm_cast
+  norm_num1
+  intro h
+  exact h.mpr True.intro
 
 example {X Y : Prop} (hXY : X ↔ Y) (hX : ¬X) : ¬Y := by
   by_contra this
-  rw [←hXY] at this
+  rewrite [←hXY] at this
   contradiction
 
 example : 2+2=5 ↔ 4+4=10 := by
-  simp only [Nat.reduceAdd]
-  simp only [Nat.reduceEqDiff]
+  norm_num1
+  rfl
 
 example {X Y Z : Prop} (hXY : X ↔ Y) (hXZ : X ↔ Z) : [X, Y, Z].TFAE := by
   tfae_have 1 ↔ 2 := by exact hXY  -- This line is optional
@@ -266,8 +245,8 @@ example {X Y : Prop} : ¬(X ↔ Y) ↔ Xor' X Y := by
   rewrite [iff_comm]
   rewrite [iff_not_comm]
   rewrite [not_or]
-  simp only [not_and]
-  simp only [not_not]
+  rewrite [not_and, not_and]
+  rewrite [not_not, not_not]
   constructor
   · intro h
     exact ⟨h.mp, h.mpr⟩
@@ -293,8 +272,9 @@ def Exercise_A_1_4 : Decidable (∀ (X Y : Prop), (X → Y) → (¬Y → ¬X) �
   use True
   rewrite [not_imp_not]
   rewrite [false_implies]
-  simp only [true_implies]
-  trivial
+  rewrite [true_implies, true_implies]
+  intro h
+  exact h.mpr True.intro
 
 /-- Exercise A.1.5 -/
 def Exercise_A_1_5 : Decidable (∀ (X Y Z : Prop), (X ↔ Y) → (Y ↔ Z) → [X, Y, Z].TFAE) := by
