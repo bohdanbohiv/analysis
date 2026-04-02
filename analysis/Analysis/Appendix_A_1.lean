@@ -188,7 +188,8 @@ example {X Y : Prop} (hXY : X ↔ Y) : X=Y := by
 example (x : ℝ) : x=3 ↔ 2*x=6 := by
   constructor
   · intro h
-    linarith
+    rewrite [h]
+    norm_num1
   intro h
   linarith
 
@@ -258,8 +259,7 @@ def Exercise_A_1_3 : Decidable (∀ (X Y : Prop), (X → Y) → (¬X → ¬Y) �
   -- the first line of this construction should be either `apply isTrue` or `apply isFalse`,
   -- depending on whether you believe the given statement to be true or false.
   apply isTrue
-  intro X Y
-  intro xy yx
+  intro X Y xy yx
   rewrite [not_imp_not] at yx
   exact ⟨xy, yx⟩
 
@@ -279,14 +279,12 @@ def Exercise_A_1_4 : Decidable (∀ (X Y : Prop), (X → Y) → (¬Y → ¬X) �
 /-- Exercise A.1.5 -/
 def Exercise_A_1_5 : Decidable (∀ (X Y Z : Prop), (X ↔ Y) → (Y ↔ Z) → [X, Y, Z].TFAE) := by
   apply isTrue
-  intro X Y Z
-  intro xy yz
+  intro X Y Z xy yz
   tfae_finish
 
 /-- Exercise A.1.6. -/
 def Exercise_A_1_6 : Decidable
     (∀ (X Y Z : Prop), (X → Y) → (Y → Z) → (Z → X) → [X, Y, Z].TFAE) := by
   apply isTrue
-  intro X Y Z
-  intro xy yz zx
+  intro X Y Z xy yz zx
   tfae_finish
