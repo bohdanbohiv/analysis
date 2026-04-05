@@ -74,11 +74,11 @@ example {X Y : Prop} (hXY : X ∧ Y) : X := by
 example {X Y : Prop} (hXY : X ∧ Y) : Y := by
   exact hXY.right
 
-example {X Y : Prop} (hX : ¬ X) : ¬ (X ∧ Y) := by
+example {X Y : Prop} (hX : ¬X) : ¬(X ∧ Y) := by
   contrapose! hX
   exact hX.left
 
-example {X Y : Prop} (hY : ¬ Y) : ¬ (X ∧ Y) := by
+example {X Y : Prop} (hY : ¬Y) : ¬(X ∧ Y) := by
   contrapose! hY
   exact hY.right
 
@@ -193,7 +193,7 @@ example (x : ℝ) : x=3 ↔ 2*x=6 := by
   intro h
   linarith
 
-example : ¬ ∀ x : ℝ, x = 3 ↔ x^2 = 9 := by
+example : ¬∀ x : ℝ, x = 3 ↔ x^2 = 9 := by
   rewrite [not_forall]
   use -3
   norm_num1

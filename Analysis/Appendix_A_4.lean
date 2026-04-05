@@ -33,21 +33,21 @@ example (h : x ≠ 2) : x + 3 ≠ 5 := by
   contrapose! h
   linarith
 
-example : ¬∀ (x : ℝ), x + 3 = 5 := by
+example : ¬∀ x : ℝ, x + 3 = 5 := by
   rewrite [not_forall]
   use 0
   norm_num1
 
-example : ¬∀ (x : ℝ), x + 3 ≠ 5 := by
+example : ¬∀ x : ℝ, x + 3 ≠ 5 := by
   rewrite [not_forall]
   use 2
   norm_num1
 
-example : ∃ (x : ℝ), x + 3 = 5 := by
+example : ∃ x : ℝ, x + 3 = 5 := by
   use 2
   norm_num1
 
-example : ∀ (x : ℝ), (x + 1)^2 = x^2 + 2*x + 1 := by
+example : ∀ x : ℝ, (x + 1)^2 = x^2 + 2*x + 1 := by
   intro x
   ring
 
@@ -61,7 +61,7 @@ example : 0 = 0 := by
     rfl
   rfl
 
-example : ¬∀ (x : ℝ), x + 155 = 497 := by
+example : ¬∀ x : ℝ, x + 155 = 497 := by
   rewrite [not_forall]
   use 0
   norm_num1
@@ -75,7 +75,7 @@ example : ¬∀ x > (0 : ℝ), x^2 > x := by
 
 /- The code below will not typecheck.
 
-example : ∀ (x:ℝ), x + 3 = 5 := by
+example : ∀ x:ℝ, x + 3 = 5 := by
   use 2
   sorry
 
@@ -89,7 +89,7 @@ example : ∀ x, 3<x ∧ x<2 → 6<2*x ∧ 2*x<4 := by
   · linarith
   linarith
 
-example : ∃ (x : ℝ), x^2 + 2*x - 8 = 0 := by
+example : ∃ x : ℝ, x^2 + 2*x - 8 = 0 := by
   use 2
   norm_num1
 

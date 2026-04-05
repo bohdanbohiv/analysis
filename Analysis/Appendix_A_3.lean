@@ -106,7 +106,7 @@ example {A B C D E F G H I : Prop} (hAE : A → E) (hEB : E ∧ B → F) (hADG :
   exact ⟨hC, hG⟩
 
 /-- Proposition A.3.5 -/
-example {A B C D :Prop} (hBC : B → C) (hAD : A → D) (hCD : D → ¬C) : A → ¬B := by
+example {A B C D : Prop} (hBC : B → C) (hAD : A → D) (hCD : D → ¬C) : A → ¬B := by
   intro hA
   by_contra hB
   have hC := hBC hB

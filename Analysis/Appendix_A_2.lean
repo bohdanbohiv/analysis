@@ -85,7 +85,7 @@ example : ∀ x : ℝ, x = 2 → x^2 = 4 := by
   rewrite [h]
   norm_num1
 
-example : ¬ ∀ x : ℝ, x^2 = 4 → x = 2 := by
+example : ¬∀ x : ℝ, x^2 = 4 → x = 2 := by
   rewrite [not_forall]
   use -2
   rewrite [Classical.not_imp]
