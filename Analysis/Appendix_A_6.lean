@@ -10,15 +10,21 @@ Some examples of proofs and quantifiers in Lean
 -/
 
 /-- Proposition A.6.1 -/
-example : ∀ ε > (0:ℝ), ∃ δ > 0, 2 * δ < ε := by
+example : ∀ ε > (0 : ℝ), ∃ δ > 0, 2 * δ < ε := by
   intro ε hε
   use ε / 3
   constructor
-  . positivity
-  . linarith
+  · positivity
+  linarith
 
-example : ¬ ∃ δ > 0, ∀ ε > (0:ℝ), 2 * δ < ε := by
-  sorry
+example : ¬∃ δ > 0, ∀ ε > (0 : ℝ), 2 * δ < ε := by
+  intro h
+  choose δ δp hδ using h
+  specialize hδ (2 * δ)
+  have t : 2 * δ > 0
+  · positivity
+  rewrite [eq_true t, true_implies] at hδ
+  linarith
 
 open Real in
 /-- Proposition A.6.2.  The proof below is somewhat non-idiomatic for Lean, but illustrates how to implement a "let ε be a quantity to be chosen later" type of proof. -/
