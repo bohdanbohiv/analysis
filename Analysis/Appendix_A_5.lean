@@ -89,22 +89,55 @@ example : ¬∃ m : ℤ, ∀ n : ℤ, m > n := by
   linarith
 
 /-- Exercise A.5.1 -/
-def Exercise_A_5_1a : Decidable (∀ x > (0:ℝ), ∀ y > (0:ℝ), y^2 = x ) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_5_1a : Decidable (∀ x > (0 : ℝ), ∀ y > (0 : ℝ), y^2 = x) := by
+  apply isFalse
+  by_contra h
+  specialize h 2
+  norm_num1 at h
+  rewrite [true_implies] at h
+  specialize h 1
+  norm_num1 at h
+  exact h True.intro
 
-def Exercise_A_5_1b : Decidable (∃ x > (0:ℝ), ∀ y > (0:ℝ), y^2 = x ) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_5_1b : Decidable (∃ x > (0 : ℝ), ∀ y > (0 : ℝ), y^2 = x) := by
+  apply isFalse
+  by_contra h
+  choose x xp hx using h
+  specialize hx (x + 1)
+  have h : x + 1 > 0
+  · positivity
+  rewrite [eq_true h, true_implies] at hx
+  nlinarith
 
-def Exercise_A_5_1c : Decidable (∃ x > (0:ℝ), ∃ y > (0:ℝ), y^2 = x ) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_5_1c : Decidable (∃ x > (0 : ℝ), ∃ y > (0 : ℝ), y^2 = x) := by
+  apply isTrue
+  use 1
+  constructor
+  · norm_num1
+  use 1
+  norm_num1
+  exact ⟨True.intro, True.intro⟩
 
-def Exercise_A_5_1d : Decidable (∀ y > (0:ℝ), ∃ x > (0:ℝ), y^2 = x ) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_5_1d : Decidable (∀ y > (0 : ℝ), ∃ x > (0 : ℝ), y^2 = x) := by
+  apply isTrue
+  intro y hy
+  use y ^ 2
+  constructor
+  · nlinarith
+  rfl
 
-def Exercise_A_5_1e : Decidable (∃ y > (0:ℝ), ∀ x > (0:ℝ), y^2 = x ) := by
-  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`.
-  sorry
+def Exercise_A_5_1e : Decidable (∃ y > (0 : ℝ), ∀ x > (0 : ℝ), y^2 = x) := by
+  apply isFalse
+  by_contra h
+  choose y yp hy using h
+  by_cases h : y > 1
+  · specialize hy (y / 2)
+    have h1 : y / 2 > 0
+    · positivity
+    rewrite [eq_true h1, true_implies] at hy
+    nlinarith
+  specialize hy (2 * y)
+  have h1 : 2 * y > 0
+  · positivity
+  rewrite [eq_true h1, true_implies] at hy
+  nlinarith
