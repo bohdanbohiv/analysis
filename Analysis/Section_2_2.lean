@@ -39,8 +39,7 @@ abbrev Nat.add (n m : Nat) : Nat := Nat.recurse (fun _ sum ↦ sum++) m n
 
 /-- This instance allows for the {kw (of := «term_+_»)}`+` notation to be used for natural number
     addition. -/
-instance Nat.instAdd : Add Nat where
-  add := add
+instance Nat.instAdd : Add Nat where add := add
 
 /-- Compare with Mathlib's {name}`Nat.zero_add`. -/
 @[simp]
@@ -119,7 +118,7 @@ theorem Nat.add_left_cancel (a b c:Nat) (habc: a + b = a + c) : b = c := by
 
 
 /-- (Not from textbook) {name}`Nat` can be given the structure of a commutative additive monoid.
-This permits tactics such as {tactic}`abel` to apply to the Chapter 2 natural numbers. -/
+    This permits tactics such as {tactic}`abel` to apply to the Chapter 2 natural numbers. -/
 instance Nat.addCommMonoid : AddCommMonoid Nat where
   add_assoc := add_assoc
   add_comm := add_comm
@@ -150,8 +149,7 @@ theorem Nat.add_pos_left {a:Nat} (b:Nat) (ha: a.IsPos) : (a + b).IsPos := by
 /-- Compare with Mathlib's {name}`Nat.add_pos_right`.
 
 This theorem is a consequence of the previous theorem and {name}`add_comm`, and {tactic}`grind` can
-automatically discover such proofs.
--/
+automatically discover such proofs. -/
 theorem Nat.add_pos_right {a:Nat} (b:Nat) (ha: a.IsPos) : (b + a).IsPos := by
   grind [add_comm, add_pos_left]
 
@@ -502,7 +500,7 @@ example (a b c d e:Nat) (hab: a ≤ b) (hbc: b < c) (hcd: c ≤ d)
         _ ≤ e := hde
 
 /-- (Not from textbook) {name}`Nat` has the structure of an ordered monoid. This allows for tactics
-such as {tactic}`gcongr` to be applicable to the Chapter 2 natural numbers. -/
+    such as {tactic}`gcongr` to be applicable to the Chapter 2 natural numbers. -/
 instance Nat.isOrderedAddMonoid : IsOrderedAddMonoid Nat where
   add_le_add_left a b hab c := (Nat.add_le_add_right a b c).mp hab
 
@@ -603,6 +601,5 @@ theorem Nat.induction_from {n:Nat} {P: Nat → Prop} (hind: ∀ m, P m → P (m+
   intro k hk
   specialize hind k
   assumption
-
 
 end Chapter2

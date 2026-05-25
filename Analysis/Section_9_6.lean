@@ -63,7 +63,7 @@ theorem BddOn.of_continuous_on_compact {a b:ℝ} (_h:a < b) {f:ℝ → ℝ} (hf:
   have why (j:ℕ) : n j ≥ j := why_7_6_3 hn j
   replace hf := hf.continuousWithinAt hLX
   rw [ContinuousWithinAt.iff] at hf
-  replace hf := hf.comp (AdherentPt.of_mem hLX) (fun j ↦ haX (n j)) hconv
+  replace hf := hf.comp (fun j ↦ haX (n j)) hconv
   apply Metric.isBounded_range_of_tendsto at hf
   rw [isBounded_def] at hf; choose M hpos hM using hf
   choose j hj using exists_nat_gt M
@@ -109,7 +109,7 @@ theorem IsMaxOn.of_continuous_on_compact {a b:ℝ} (h:a < b) {f:ℝ → ℝ} (hf
   use xmax, hmax
   have hn_lower (j:ℕ) : n j ≥ j := why_7_6_3 hn j
   have hconv' : Filter.atTop.Tendsto (fun j ↦ f (x (n j))) (nhds (f xmax)) :=
-    hconv.comp_of_continuous hmax (hf.continuousWithinAt hmax) (fun j ↦ hx (n j))
+    hconv.comp_of_continuous (hf.continuousWithinAt hmax) (fun j ↦ hx (n j))
   have hlower (j:ℕ) : m - 1/(j+1:ℝ) < f (x (n j)) := by
     apply lt_of_le_of_lt _ (hfx (n j)); gcongr; grind
   have hupper (j:ℕ) : f (x (n j)) ≤ m := by apply claim1; simp [Set.mem_image, E]; use x (n j), hx (n j)
@@ -154,26 +154,40 @@ theorem sInf.of_continuous_on_compact {a b:ℝ} (h:a < b) (f:ℝ → ℝ) (hf: C
   choose x hx h' using IsMinOn.of_continuous_on_compact h hf
   grind [sInf.of_isMinOn]
 
-/-- Exercise 9.6.1 -/
+/-- Exercise 9.6.1 a) -/
 example : ∃ f: ℝ → ℝ, ContinuousOn f (.Ioo 1 2) ∧ BddOn f (.Ioo 1 2) ∧
   ∃ x₀ ∈ Set.Ioo 1 2, IsMinOn f (.Ioo 1 2) x₀ ∧
   ¬ ∃ x₀ ∈ Set.Ioo 1 2, IsMaxOn f (.Ioo 1 2) x₀
   := by sorry
 
-/-- Exercise 9.6.1 -/
-example : ∃ f: ℝ → ℝ, ContinuousOn f (.Ioo 1 2) ∧ BddOn f (.Ioo 1 2) ∧
-  ∃ x₀ ∈ Set.Ioo 1 2, IsMaxOn f (.Ioo 1 2) x₀ ∧
-  ¬ ∃ x₀ ∈ Set.Ioo 1 2, IsMinOn f (.Ioo 1 2) x₀
+/-- Exercise 9.6.1 b) -/
+example : ∃ f: ℝ → ℝ, ContinuousOn f (.Ici 0) ∧ BddOn f (.Ici 0) ∧
+  ∃ x₀ ∈ Set.Ici 0, IsMaxOn f (.Ici 0) x₀ ∧
+  ¬ ∃ x₀ ∈ Set.Ici 0, IsMinOn f (.Ici 0) x₀
   := by sorry
 
-/-- Exercise 9.6.1 -/
+/-- Exercise 9.6.1 c) -/
 example : ∃ f: ℝ → ℝ, BddOn f (.Icc (-1) 1) ∧
-  ¬ ∃ x₀ ∈ Set.Icc (-1) 1, IsMinOn f (.Icc (-1) 1) x₀ ∧
-  ¬ ∃ x₀ ∈ Set.Icc (-1) 1, IsMaxOn f (.Icc (-1) 1) x₀
+  (¬ ∃ x₀ ∈ Set.Icc (-1) 1, IsMinOn f (.Icc (-1) 1) x₀) ∧
+  (¬ ∃ x₀ ∈ Set.Icc (-1) 1, IsMaxOn f (.Icc (-1) 1) x₀)
   := by sorry
 
-/-- Exercise 9.6.1 -/
+/-- Exercise 9.6.1 d) -/
 example : ∃ f: ℝ → ℝ, ¬ BddAboveOn f (.Icc (-1) 1) ∧ ¬ BddBelowOn f (.Icc (-1) 1) := by sorry
 
+/-- Exercise 9.6.2 -/
+theorem BddOn.add (f g : ℝ → ℝ) (X : Set ℝ) (hf : BddOn f X) (hg : BddOn g X) :
+    BddOn (f + g) X := by sorry
+
+theorem BddOn.sub (f g : ℝ → ℝ) (X : Set ℝ) (hf : BddOn f X) (hg : BddOn g X) :
+    BddOn (f - g) X := by sorry
+
+theorem BddOn.mul (f g : ℝ → ℝ) (X : Set ℝ) (hf : BddOn f X) (hg : BddOn g X) :
+    BddOn (f * g) X := by sorry
+
+def BddOn.div : Decidable (∀ (f g : ℝ → ℝ) (X : Set ℝ) (_ : ∀ x ∈ X, g x ≠ 0) (_ : BddOn f X)
+    (_: BddOn g X), (BddOn (f / g) X)) := by
+  -- the first line of this construction should be either `apply isTrue` or `apply isFalse`, depending on whether you believe the given statement to be true or false.
+  sorry
 
 end Chapter9

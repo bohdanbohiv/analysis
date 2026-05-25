@@ -21,10 +21,10 @@ open Chapter6 Filter
 
 namespace Chapter9
 
-example : ContinuousOn (fun x:ℝ ↦ 1/x) (.Icc 0 2) := by
+example : ContinuousOn (fun x:ℝ ↦ 1/x) (.Ioo 0 2) := by
   sorry
 
-example : ¬ BddOn (fun x:ℝ ↦ 1/x) (.Icc 0 2) := by
+example : ¬ BddOn (fun x:ℝ ↦ 1/x) (.Ioo 0 2) := by
   sorry
 
 /-- Example 9.9.1 -/
@@ -78,7 +78,10 @@ example : ¬ UniformContinuousOn (fun x:ℝ ↦ 1/x) (Set.Icc 0 2) := by
 
 end Chapter9
 
-/-- Definition 9.9.5.  This is similar but not identical to `Real.close_seq` from Section 6.1. -/
+/--
+Definition 9.9.5.  This is similar but not identical to {name}`Real.CloseSeq` from
+Section 6.1.
+-/
 abbrev Real.CloseSeqs (ε:ℝ) (a b: Chapter6.Sequence) : Prop :=
   (a.m = b.m) ∧ ∀ n ≥ a.m, ε.Close (a n) (b n)
 
@@ -201,7 +204,7 @@ theorem UniformContinuousOn.of_continuousOn {a b:ℝ} {f:ℝ → ℝ}
   observe hbounded : Bornology.IsBounded (.Icc a b)
   have ⟨ j, hj, ⟨ L, hL, hconv⟩ ⟩ := (Heine_Borel (.Icc a b)).mp ⟨ hclosed, hbounded ⟩ _ hxmem
   replace hcont := ContinuousOn.continuousWithinAt hcont hL
-  have hconv' := hconv.comp_of_continuous hL hcont (fun k ↦ hxmem (j k))
+  have hconv' := hconv.comp_of_continuous hcont (fun k ↦ hxmem (j k))
   rw [Sequence.equiv_iff] at hequiv
   replace hequiv : atTop.Tendsto (fun k ↦ x (n (j k)) - y (n (j k))) (nhds 0) := by
     observe hj' : atTop.Tendsto j .atTop
@@ -212,7 +215,7 @@ theorem UniformContinuousOn.of_continuousOn {a b:ℝ} {f:ℝ → ℝ}
     convert hconv.sub hequiv with k
     . abel
     simp
-  replace hyconv := hyconv.comp_of_continuous hL hcont (fun k ↦ hymem (j k))
+  replace hyconv := hyconv.comp_of_continuous hcont (fun k ↦ hymem (j k))
   have : atTop.Tendsto (fun k ↦ f (x (n (j k))) - f (y (n (j k)))) (nhds 0) := by
     convert hconv'.sub hyconv; simp
   sorry

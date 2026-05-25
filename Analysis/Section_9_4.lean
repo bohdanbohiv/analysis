@@ -58,56 +58,57 @@ example : ¬ ContinuousAt f_9_4_6 0 := by sorry
 
 example : ContinuousWithinAt f_9_4_6 (.Ici 0) 0 := by sorry
 
-/-- Proposition 9.4.7 / Exercise 9.4.1.  It is possible that the hypothesis {lean}`x₀ ∈ X` is unnecessary. -/
-theorem ContinuousWithinAt.tfae (X:Set ℝ) (f: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X) :
+/-- Proposition 9.4.7 / Exercise 9.4.1. -/
+theorem ContinuousWithinAt.tfae (X:Set ℝ) (f: ℝ → ℝ) (x₀:ℝ) :
   [
     ContinuousWithinAt f X x₀,
     ∀ a:ℕ → ℝ, (∀ n, a n ∈ X) → Filter.atTop.Tendsto a (nhds x₀) → Filter.atTop.Tendsto (fun n ↦ f (a n)) (nhds (f x₀)),
-    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ X, |x-x₀| < δ → |f x - f x₀| < ε
+    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ X, |x-x₀| < δ → |f x - f x₀| < ε,
+    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ X, |x-x₀| ≤ δ → |f x - f x₀| ≤ ε
   ].TFAE := by
   sorry
 
 /-- Remark 9.4.8 --/
-theorem _root_.Filter.Tendsto.comp_of_continuous {X:Set ℝ} {f: ℝ → ℝ} {x₀:ℝ} (h : x₀ ∈ X)
+theorem _root_.Filter.Tendsto.comp_of_continuous {X:Set ℝ} {f: ℝ → ℝ} {x₀:ℝ}
   (h_cont: ContinuousWithinAt f X x₀) {a: ℕ → ℝ} (ha: ∀ n, a n ∈ X)
   (hconv: Filter.atTop.Tendsto a (nhds x₀)):
   Filter.atTop.Tendsto (fun n ↦ f (a n)) (nhds (f x₀)) := by
-  have := (ContinuousWithinAt.tfae X f h).out 0 1
+  have := (ContinuousWithinAt.tfae X f x₀).out 0 1
   grind
 
 /- Proposition 9.4.9 -/
-theorem ContinuousWithinAt.add {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X)
+theorem ContinuousWithinAt.add {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ}
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (f + g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.add (AdherentPt.of_mem h) hg using 1
+  rw [iff] at hf hg ⊢; convert hf.add hg using 1
 
 
-theorem ContinuousWithinAt.sub {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X)
+theorem ContinuousWithinAt.sub {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ}
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (f - g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.sub (AdherentPt.of_mem h) hg using 1
+  rw [iff] at hf hg ⊢; convert hf.sub hg using 1
 
-theorem ContinuousWithinAt.max {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X)
+theorem ContinuousWithinAt.max {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ}
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (max f g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.max (AdherentPt.of_mem h) hg using 1
+  rw [iff] at hf hg ⊢; convert hf.max hg using 1
 
 
-theorem ContinuousWithinAt.min {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X)
+theorem ContinuousWithinAt.min {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ}
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (min f g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.min (AdherentPt.of_mem h) hg using 1
+  rw [iff] at hf hg ⊢; convert hf.min hg using 1
 
 
-theorem ContinuousWithinAt.mul' {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X)
+theorem ContinuousWithinAt.mul' {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ}
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (f * g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.mul (AdherentPt.of_mem h) hg using 1
+  rw [iff] at hf hg ⊢; convert hf.mul hg using 1
 
-theorem ContinuousWithinAt.div' {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (h : x₀ ∈ X) (hM: g x₀ ≠ 0)
+theorem ContinuousWithinAt.div' {X:Set ℝ} (f g: ℝ → ℝ) {x₀:ℝ} (hM: g x₀ ≠ 0)
   (hf: ContinuousWithinAt f X x₀) (hg: ContinuousWithinAt g X x₀) :
   ContinuousWithinAt (f / g) X x₀ := by
-  rw [iff] at hf hg ⊢; convert hf.div (AdherentPt.of_mem h) hM hg using 1
+  rw [iff] at hf hg ⊢; convert hf.div hM hg using 1
 
 /-- Proposition 9.4.10 / Exercise 9.4.3  -/
 theorem Continuous.exp {a:ℝ} (ha: a>0) : Continuous (fun x:ℝ ↦ a ^ x) := by
@@ -122,7 +123,9 @@ theorem Continuous.abs : Continuous (fun x:ℝ ↦ |x|) := by
   sorry -- TODO
 
 /-- Proposition 9.4.13 / Exercise 9.4.5 -/
-theorem ContinuousWithinAt.comp {X Y: Set ℝ} {f g:ℝ → ℝ} (hf: ∀ x ∈ X, f x ∈ Y) {x₀:ℝ} (hx₀: x ∈ X) (hf_cont: ContinuousWithinAt f X x₀) (hg_cont: ContinuousWithinAt g Y (f x₀)): ContinuousWithinAt (g ∘ f) X x₀ := by sorry
+theorem ContinuousWithinAt.comp {X Y: Set ℝ} {f g:ℝ → ℝ} (hf: ∀ x ∈ X, f x ∈ Y) (x₀:ℝ)
+  (hf_cont: ContinuousWithinAt f X x₀) (hg_cont: ContinuousWithinAt g Y (f x₀)):
+  ContinuousWithinAt (g ∘ f) X x₀ := by sorry
 
 /-- Example 9.4.14 -/
 example : Continuous (fun x:ℝ ↦ 3*x + 1) := by

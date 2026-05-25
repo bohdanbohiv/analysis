@@ -19,7 +19,7 @@ Main constructions and results of this section:
 namespace Chapter9
 
 /-- Theorem 9.7.1 (Intermediate value theorem) -/
-theorem intermediate_value {a b:ℝ} (hab: a < b) {f:ℝ → ℝ} (hf: ContinuousOn f (.Icc a b)) {y:ℝ} (hy: y ∈ Set.Icc (f a) (f b) ∨ y ∈ Set.Icc (f a) (f b)) :
+theorem intermediate_value {a b:ℝ} (hab: a < b) {f:ℝ → ℝ} (hf: ContinuousOn f (.Icc a b)) {y:ℝ} (hy: y ∈ Set.Icc (f a) (f b) ∨ y ∈ Set.Icc (f b) (f a)) :
   ∃ c ∈ Set.Icc a b, f c = y := by
   -- This proof is written to follow the structure of the original text.
   obtain hy_left | hy_right := hy
@@ -54,7 +54,7 @@ theorem intermediate_value {a b:ℝ} (hab: a < b) {f:ℝ → ℝ} (hf: Continuou
         . exact tendsto_const_nhds
         . exact fun n ↦ le_of_lt (hx2 n)
         exact fun n ↦ le_csSup hE_bdd (hx1 n)
-      replace := this.comp_of_continuous hc (hf.continuousWithinAt hc) (fun n ↦ hE (hx1 n))
+      replace := this.comp_of_continuous (hf.continuousWithinAt hc) (fun n ↦ hE (hx1 n))
       have hfxny (n:ℕ) : f (x n) ≤ y := by specialize hx1 n; simp [E] at hx1; grind
       exact le_of_tendsto' this hfxny
     have hne : c < b := by grind
