@@ -24,8 +24,8 @@ Main constructions and results of this section:
 - Recursive definitions for `Chapter2.Nat`.
 
 Note: at the end of this chapter, the `Chapter2.Nat` class will be deprecated in favor of the
-standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`.  However, we will develop the properties of
-`Chapter2.Nat` "by hand" in the next few sections for pedagogical purposes.
+standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`.  However, we will develop the properties
+of `Chapter2.Nat` "by hand" in the next few sections for pedagogical purposes.
 
 -/
 
@@ -43,29 +43,28 @@ deriving Repr, DecidableEq  -- this allows `decide` to work on `Nat`
 
 /-- Axiom 2.1 (0 is a natural number) -/
 instance Nat.instZero : Zero Nat := ⟨ zero ⟩
-#check (0:Nat)
+#check (0 : Nat)
 
 /-- Axiom 2.2 (Successor of a natural number is a natural number) -/
-postfix:100 "++" => Nat.succ
-#check (fun n ↦ n++)
-
+postfix : 100 "++" => Nat.succ
+#check (λ n ↦ n++)
 
 /-- Definition 2.1.3 (Definition of the numerals 0, 1, 2, etc.). Note: to avoid ambiguity, one may
-  need to use explicit casts such as {lean}`(0:Nat)`, {lean}`(1:Nat)`, etc. to refer to this
+  need to use explicit casts such as {lean}`(0 : Nat)`, {lean}`(1 : Nat)`, etc. to refer to this
   chapter's version of the natural numbers.  -/
-instance Nat.instOfNat {n:_root_.Nat} : OfNat Nat n where
-  ofNat := _root_.Nat.rec 0 (fun _ n ↦ n++) n
+instance Nat.instOfNat {n : _root_.Nat} : OfNat Nat n where
+  ofNat := _root_.Nat.rec 0 (λ _ n ↦ n++) n
 
 instance Nat.instOne : One Nat := ⟨ 1 ⟩
 lemma Nat.zero_succ : 0++ = 1 := by rfl
-#check (1:Nat)
+#check (1 : Nat)
 
 lemma Nat.one_succ : 1++ = 2 := by rfl
-#check (2:Nat)
+#check (2 : Nat)
 
 /-- Proposition 2.1.4 (3 is a natural number)-/
 lemma Nat.two_succ : 2++ = 3 := by rfl
-#check (3:Nat)
+#check (3 : Nat)
 
 /--
   Axiom 2.3 (0 is not the successor of any natural number).
@@ -76,7 +75,7 @@ theorem Nat.succ_ne (n:Nat) : n++ ≠ 0 := by
   injection h
 
 /-- Proposition 2.1.6 (4 is not equal to zero) -/
-theorem Nat.four_ne : (4:Nat) ≠ 0 := by
+theorem Nat.four_ne : (4 : Nat) ≠ 0 := by
   -- By definition, 4 = 3++.
   change 3++ ≠ 0
   -- By axiom 2.3, 3++ is not zero.
@@ -86,20 +85,20 @@ theorem Nat.four_ne : (4:Nat) ≠ 0 := by
   Axiom 2.4 (Different natural numbers have different successors).
   Compare with Mathlib's {name}`Nat.succ_inj`.
 -/
-theorem Nat.succ_cancel {n m:Nat} (hnm: n++ = m++) : n = m := by
+theorem Nat.succ_cancel {n m : Nat} (hnm : n++ = m++) : n = m := by
   injection hnm
 
 /--
   Axiom 2.4 (Different natural numbers have different successors).
   Compare with Mathlib's {name}`Nat.succ_ne_succ`.
 -/
-theorem Nat.succ_ne_succ (n m:Nat) : n ≠ m → n++ ≠ m++ := by
+theorem Nat.succ_ne_succ (n m : Nat) : n ≠ m → n++ ≠ m++ := by
   intro h
   contrapose! h
   exact succ_cancel h
 
 /-- Proposition 2.1.8 (6 is not equal to 2) -/
-theorem Nat.six_ne_two : (6:Nat) ≠ 2 := by
+theorem Nat.six_ne_two : (6 : Nat) ≠ 2 := by
 -- this proof is written to follow the structure of the original text.
   by_contra h
   change 5++ = 1++ at h
@@ -110,7 +109,7 @@ theorem Nat.six_ne_two : (6:Nat) ≠ 2 := by
   contradiction
 
 /-- One can also prove this sort of result by the {tactic}`decide` tactic -/
-theorem Nat.six_ne_two' : (6:Nat) ≠ 2 := by
+theorem Nat.six_ne_two' : (6 : Nat) ≠ 2 := by
   decide
 
 /-- Axiom 2.5 (Principle of mathematical induction). The {tactic}`induction` (or
@@ -126,42 +125,41 @@ theorem Nat.induction (P : Nat → Prop) (hbase : P 0) (hind : ∀ n, P n → P 
   Recursion. Analogous to the inbuilt Mathlib method {name}`Nat.rec` associated to
   the Mathlib natural numbers
 -/
-abbrev Nat.recurse (f: Nat → Nat → Nat) (c: Nat) : Nat → Nat := fun n ↦ match n with
+abbrev Nat.recurse (f : Nat → Nat → Nat) (c : Nat) : Nat → Nat := λ n ↦ match n with
 | 0 => c
 | n++ => f n (recurse f c n)
 
 /-- Proposition 2.1.16 (recursive definitions). Compare with Mathlib's {name}`Nat.rec_zero`. -/
-theorem Nat.recurse_zero (f: Nat → Nat → Nat) (c: Nat) : Nat.recurse f c 0 = c := by rfl
+theorem Nat.recurse_zero (f : Nat → Nat → Nat) (c : Nat) : Nat.recurse f c 0 = c := by rfl
 
 /-- Proposition 2.1.16 (recursive definitions). Compare with Mathlib's {name}`Nat.rec_add_one`. -/
-theorem Nat.recurse_succ (f: Nat → Nat → Nat) (c: Nat) (n: Nat) :
+theorem Nat.recurse_succ (f : Nat → Nat → Nat) (c : Nat) (n : Nat) :
     recurse f c (n++) = f n (recurse f c n) := by rfl
 
 /-- Proposition 2.1.16 (recursive definitions). -/
-theorem Nat.eq_recurse (f: Nat → Nat → Nat) (c: Nat) (a: Nat → Nat) :
+theorem Nat.eq_recurse (f : Nat → Nat → Nat) (c : Nat) (a : Nat → Nat) :
     (a 0 = c ∧ ∀ n, a (n++) = f n (a n)) ↔ a = recurse f c := by
   constructor
-  . intro ⟨ h0, hsucc ⟩
+  · intro ⟨ h0, hsucc ⟩
     -- this proof is written to follow the structure of the original text.
     apply funext; apply induction
-    . exact h0
+    · exact h0
     intro n hn
     rw [hsucc n, recurse_succ, hn]
   intro h
-  rw [h]
+  rewrite [h]
   constructor -- could also use `split_ands` or `and_intros` here
-  . exact recurse_zero _ _
+  · exact recurse_zero _ _
   exact recurse_succ _ _
 
-
 /-- Proposition 2.1.16 (recursive definitions). -/
-theorem Nat.recurse_uniq (f: Nat → Nat → Nat) (c: Nat) :
-    ∃! (a: Nat → Nat), a 0 = c ∧ ∀ n, a (n++) = f n (a n) := by
+theorem Nat.recurse_uniq (f : Nat → Nat → Nat) (c : Nat) :
+    ∃! (a : Nat → Nat), a 0 = c ∧ ∀ n, a (n++) = f n (a n) := by
   apply ExistsUnique.intro (recurse f c)
-  . constructor -- could also use `split_ands` or `and_intros` here
-    . exact recurse_zero _ _
-    . exact recurse_succ _ _
+  · constructor -- could also use `split_ands` or `and_intros` here
+    · exact recurse_zero _ _
+    exact recurse_succ _ _
   intro a
-  exact (eq_recurse _ _ a).mp
+  exact (eq_recurse _ _ _).mp
 
 end Chapter2
