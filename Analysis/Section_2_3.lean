@@ -9,7 +9,7 @@ original text.
 
 I have attempted to make the translation as faithful a paraphrasing as possible of the original
 text. When there is a choice between a more idiomatic Lean solution and a more faithful
-translation, I have generally chosen the latter.  In particular, there will be places where the
+translation, I have generally chosen the latter. In particular, there will be places where the
 Lean code could be "golfed" to be more elegant and idiomatic, but I have consciously avoided
 doing so.
 
@@ -19,7 +19,7 @@ Main constructions and results of this section:
   {name}`Chapter2.Nat`.
 
 Note: at the end of this chapter, the {name}`Chapter2.Nat` class will be deprecated in favor of the
-standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`.  However, we will develop the properties
+standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`. However, we will develop the properties
 of {name}`Chapter2.Nat` "by hand" for pedagogical purposes.
 
 ## Tips from past users
@@ -138,7 +138,7 @@ theorem Nat.mul_assoc (a b c : Nat) : (a * b) * c = a * (b * c) := by
   intro c h
   rw [mul_succ, mul_succ, h, mul_add]
 
-/-- (Not from textbook)  {name}`Nat` is a commutative semiring.
+/-- (Not from textbook) {name}`Nat` is a commutative semiring.
     This allows tactics such as {tactic}`ring` to apply to the Chapter 2 natural numbers. -/
 instance Nat.instCommSemiring : CommSemiring Nat where
   left_distrib := mul_add
@@ -234,12 +234,12 @@ theorem Nat.exists_div_mod (n : Nat) {q : Nat} (hq : q.IsPos) :
   obtain ⟨m, ⟨r, h⟩⟩ := h
   rewrite [lt_iff_succ_le] at h
   obtain c | c := (le_iff_lt_or_eq _ _).mp h.right.left
-  use m, (r++)
-  split_ands
-  · exact zero_le _
-  · exact c.left
-  · exact c.right
-  · rw [add_succ, h.right.right]
+  · use m, (r++)
+    split_ands
+    · exact zero_le _
+    · exact c.left
+    · exact c.right
+    · rw [add_succ, h.right.right]
   use (m++), 0
   split_ands
   · rfl
@@ -249,6 +249,50 @@ theorem Nat.exists_div_mod (n : Nat) {q : Nat} (hq : q.IsPos) :
   rewrite [add_zero, succ_mul]
   nth_rewrite 2 [←c]
   rw [add_succ, h.right.right]
+
+theorem Nat.exists_unique_div_mod (n : Nat) {d : Nat} (hd : d.IsPos) :
+    ∃! qr : Nat × Nat, qr.2 < d ∧ n = qr.1 * d + qr.2 := by
+  have ⟨q, r, h⟩ := exists_div_mod n hd
+  replace h := h.right
+  obtain ⟨hr, h⟩ := h
+  use ⟨q, r⟩
+  simp
+  constructor
+  · constructor
+    · exact hr
+    exact h
+  intro q' r' h1 h2
+  rcases trichotomous q q' with lt | eq | gt
+  · exfalso
+    rewrite [lt_iff_add_pos] at lt
+    obtain ⟨p, hp, eq⟩ := lt
+    rewrite [eq, add_mul, add_assoc, h] at h2
+    apply add_left_cancel at h2
+    have ⟨a, ha⟩ := uniq_succ_eq p hp
+    simp at ha
+    rewrite [← ha.1, ← one_add, add_mul, one_mul, add_assoc] at h2
+    have h3 : d < r
+    · constructor
+      · use (a*d + r')
+      exact hr.2.symm
+    exact not_lt_of_gt _ _ ⟨hr, h3⟩
+  · symm at eq
+    rewrite [eq, h] at h2
+    apply add_left_cancel at h2
+    exact ⟨eq, h2.symm⟩
+  exfalso
+  rewrite [gt_iff_lt, lt_iff_add_pos] at gt
+  obtain ⟨p, hp, eq⟩ := gt
+  rewrite [eq, add_mul, add_assoc, h2] at h
+  apply add_left_cancel at h
+  have ⟨a, ha⟩ := uniq_succ_eq p hp
+  simp at ha
+  rewrite [← ha.1, ← one_add, add_mul, one_mul, add_assoc] at h
+  have h3 : d < r'
+  · constructor
+    · use (a * d + r)
+    exact h1.2.symm
+  exact not_lt_of_gt _ _ ⟨h1, h3⟩
 
 /-- Definition 2.3.11 (Exponentiation for natural numbers) -/
 abbrev Nat.pow (m n : Nat) : Nat := Nat.recurse (λ _ prod ↦ prod * m) 1 n

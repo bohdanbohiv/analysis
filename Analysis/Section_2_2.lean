@@ -4,12 +4,12 @@ import Analysis.Section_2_1
 /-!
 # Analysis I, Section 2.2: Addition
 
-This file is a translation of Section 2.2 of Analysis I to Lean 4.  All numbering refers to the
+This file is a translation of Section 2.2 of Analysis I to Lean 4. All numbering refers to the
 original text.
 
 I have attempted to make the translation as faithful a paraphrasing as possible of the original
 text. When there is a choice between a more idiomatic Lean solution and a more faithful
-translation, I have generally chosen the latter.  In particular, there will be places where the
+translation, I have generally chosen the latter. In particular, there will be places where the
 Lean code could be "golfed" to be more elegant and idiomatic, but I have consciously avoided
 doing so.
 
@@ -19,7 +19,7 @@ Main constructions and results of this section:
 - Establishment of basic properties of addition and order.
 
 Note: at the end of this chapter, the {name}`Chapter2.Nat` class will be deprecated in favor of the
-standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`.  However, we will develop the properties of
+standard Mathlib class {name}`_root_.Nat`, or {lean}`ℕ`. However, we will develop the properties of
 {name}`Chapter2.Nat` "by hand" for pedagogical purposes.
 
 ## Tips from past users
@@ -168,7 +168,7 @@ theorem Nat.add_eq_zero (a b : Nat) (hab : a + b = 0) : a = 0 ∧ b = 0 := by
 
 /-
 The API in `Tools/ExistsUnique.Lean`, and the method `existsUnique_of_exists_of_unique` in
-particular, may be useful for the next problem.  Also, the `obtain` tactic is
+particular, may be useful for the next problem. Also, the `obtain` tactic is
 useful for extracting witnesses from existential statements; for instance, `obtain ⟨ x, hx ⟩ := h`
 extracts a witness `x` and a proof `hx : P x` of the property from a hypothesis `h : ∃ x, P x`.
 -/
@@ -259,7 +259,7 @@ theorem Nat.le_refl (a:Nat) : a ≤ a := a.ge_refl
 /-- The refl tag allows for the {tactic}`rfl` tactic to work for inequalities. -/
 example (a b : Nat): a + b ≥ a + b := by rfl
 
-/-- (b) (Order is transitive).  The {tactic}`obtain` tactic will be useful here.
+/-- (b) (Order is transitive). The {tactic}`obtain` tactic will be useful here.
     Compare with Mathlib's {name}`Nat.le_trans`. -/
 theorem Nat.ge_trans {a b c : Nat} (hab : a ≥ b) (hbc : b ≥ c) : a ≥ c := by
   rewrite [ge_iff_le, le_iff] at *
@@ -283,7 +283,7 @@ theorem Nat.ge_antisymm {a b : Nat} (hab : a ≥ b) (hba : b ≥ a) : a = b := b
   rewrite [(add_eq_zero _ _ h).left, add_zero] at hn
   exact hn
 
-/-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_right`. -/
+/-- (d) (Addition preserves order). Compare with Mathlib's {name}`Nat.add_le_add_right`. -/
 theorem Nat.add_ge_add_right (a b c : Nat) : a ≥ b ↔ a + c ≥ b + c := by
   constructor
   · intro h
@@ -299,18 +299,18 @@ theorem Nat.add_ge_add_right (a b c : Nat) : a ≥ b ↔ a + c ≥ b + c := by
   apply add_left_cancel at h
   exact h
 
-/-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_left`.  -/
+/-- (d) (Addition preserves order). Compare with Mathlib's {name}`Nat.add_le_add_left`. -/
 theorem Nat.add_ge_add_left (a b c : Nat) : a ≥ b ↔ c + a ≥ c + b := by
   simp only [add_comm]
   exact add_ge_add_right _ _ _
 
-/-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_right`.  -/
+/-- (d) (Addition preserves order). Compare with Mathlib's {name}`Nat.add_le_add_right`. -/
 theorem Nat.add_le_add_right (a b c : Nat) : a ≤ b ↔ a + c ≤ b + c := add_ge_add_right _ _ _
 
-/-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_left`.  -/
+/-- (d) (Addition preserves order). Compare with Mathlib's {name}`Nat.add_le_add_left`. -/
 theorem Nat.add_le_add_left (a b c : Nat) : a ≤ b ↔ c + a ≤ c + b := add_ge_add_left _ _ _
 
-/-- (e) a < b iff a++ ≤ b.  Compare with Mathlib's {name}`Nat.succ_le_iff`. -/
+/-- (e) a < b iff a++ ≤ b. Compare with Mathlib's {name}`Nat.succ_le_iff`. -/
 theorem Nat.lt_iff_succ_le (a b : Nat) : a < b ↔ a++ ≤ b := by
   constructor
   · rewrite [le_iff, lt_iff]
